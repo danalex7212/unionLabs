@@ -1,0 +1,41 @@
+POST http://localhost:8000/api/register HTTP/1.1
+content-Type : application/json
+
+{
+    "name": "b",
+    "email": "b@b.com",
+    "password": "b"
+}
+
+###
+
+POST http://localhost:8000/api/login HTTP/1.1
+content-Type : application/json
+
+{
+
+    "email": "a@a.com",
+    "password": "a"
+}
+
+###
+
+GET http://localhost:8000/api/user HTTP/1.1
+content-Type : application/json
+
+{
+
+    "email": "a@a.com",
+    "password": "a"
+}
+
+###
+
+POST http://localhost:8000/api/logout HTTP/1.1
+content-Type : application/json
+
+{
+
+    "email": "b@b.com",
+    "password": "b"
+}

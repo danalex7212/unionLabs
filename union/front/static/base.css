@@ -1,0 +1,118 @@
+*,
+*:before,
+*:after {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    
+    background: #fff;
+}
+
+.parent{
+    display: grid;
+    height: 100vh;
+    grid-template: auto 1fr auto / auto 1fr auto;
+}
+
+header{
+    padding: 2rem;
+    grid-column: 1 / 4;
+    /* background-color: aqua; */
+    display: grid;
+    place-items: center;
+    
+}
+.nav{
+    display: grid;
+    place-items: center;
+    width: 50%;
+    /* background-color: #979394; */
+    grid-template-columns: 1fr 1fr;
+    
+}
+
+.button-42 {
+    background-color: initial;
+    
+    background-image: linear-gradient(-180deg, rgb(161, 194, 239), rgb(11, 106, 239));
+    border-radius: 6px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: inline-block;
+    font-family: Inter,-apple-system,system-ui,Roboto,"Helvetica Neue",Arial,sans-serif;
+    font-size: 2rem;
+    height: 3rem;
+    line-height: 3rem;
+    text-decoration: none;
+    outline: 0;
+    overflow: hidden;
+    padding: 0 20px;
+    pointer-events: auto;
+    position: relative;
+    text-align: center;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    vertical-align: top;
+    white-space: nowrap;
+    /* width: 30%; */
+    z-index: 9;
+    border: 0;
+    transition: box-shadow .2s;
+  }
+  
+  .button-42:hover {
+    box-shadow: rgba(253, 76, 0, 0.5) 0 3px 8px;
+  }
+  .button-42 a {
+    text-decoration: none;
+    color: #fff;
+    
+  }
+
+
+
+
+.left-side {
+    grid-column: 1 / 2;
+    padding:1rem;
+    /* background-color: blueviolet; */
+
+}
+
+main {
+    grid-column: 2 / 3;
+    /* background-color: red; */
+    padding: 1rem;
+    display: grid;
+    place-items: center;
+}
+
+.right-side{
+    grid-column: 3 / 4;
+    padding: 1rem;
+    /* background-color: green; */
+}
+
+footer{
+    padding: 2rem;
+
+    grid-column: 1 / 4;
+    /* background-color: blue; */
+}
+
+
+#orderTable{
+    display: grid;
+    place-items: center;
+    background-color: #8bc2eb;
+    padding:1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    margin: 1rem;
+    
+}

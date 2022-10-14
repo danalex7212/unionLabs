@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block script %}
+<script defer>
+    const email = document.querySelector('#username');
+    const password = document.querySelector('#psw'); 
+    const form = document.querySelector('#loginForm');
+    
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        isFormValid = validateForm();
+        if(isFormValid){
+
+            (getTokens(email,password)).then(
+                (data) => {
+                    window.location.href = "login";
+                }
+            );
+        }
+    });
+    function validateForm() {
+        var x = document.forms["loginForm"]["username"].value;
+        var y = document.forms["loginForm"]["psw"].value;
+        if (x == "") {
+            alert("Username must be filled out");
+            return false;
+        }
+        if (y == "") {
+            alert("Password must be filled out");
+            return false;
+        }
+        return true;
+    }
+    async function getTokens(email,password){
+            var data = {
+                "email": email.value,
+                "password": password.value
+                }
+            console.log(data);
+            var token = '{{csrf_token}}';
+                try{
+                    const response = await fetch('api/login', {
+                        method: 'POST',
+                        body: JSON.stringify(data),
+                        headers: {
+                            'Content-Type': 'application/json',
+                            "X-CSRFToken": token
+
+                        }
+                    });
+                    var res =  await response.json();
+                    return res;
+                }
+                catch(err){
+                    console.log(err);
+                }
+        }
+    
+
+</script>
+{% endblock %}
+
+{% block content %}
+    
+    <section>
+        <div class = "form-container">
+            <h1> Login</h1>
+            <form name="loginForm" id ="loginForm">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class = "control">
+                    <label for = "username"> Username </label>
+                    <input type = "email" name = "username" id = "username" placeholder = "Enter your username" required>
+                </div>
+                <div class = "control">
+                    <label for = "password"> Password </label>
+                    <input type = "password" name = "psw" id = "psw" placeholder = "Enter your password" required>
+                </div>
+                <span>
+                    <input type = "checkbox" name = "remember" id = "remember">
+                    <label for = "remember"> Remember me </label>
+                </span>
+                <div class = "control" id="app-login">
+                    <input type = "submit" value="Login"/> 
+                </div>
+            </form>
+           
+            <div class="link">
+                <a href="#"> Forgot Password? </a>
+            </div>
+        </div>
+    </section>
+{% endblock %}
