@@ -11,7 +11,7 @@
         logoutUser().then(
             (data) => {
                 console.log("Logged out");
-                
+                window.location.href = "login";
             }
         );
     });
@@ -47,7 +47,7 @@
     <section>
         <div class = "home-container">
 
-            <h1> Home</h1>
+            <h1> Home {{name}}</h1>
             
         </div>
     </section>

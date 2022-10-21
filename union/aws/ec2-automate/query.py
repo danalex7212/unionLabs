@@ -21,7 +21,7 @@ from botocore.exceptions import ClientError
 # except Exception as e:
 #     print("Queue does not exist" , str(e))
 
-ec2 = boto3.client('ec2')
+#ec2 = boto3.client('ec2')
 
 # response = ec2.describe_vpcs()
 
@@ -47,24 +47,24 @@ ec2 = boto3.client('ec2')
 # except ClientError as e:
 #     print(e)
 
-response = ec2.authorize_security_group_ingress(
-    GroupId='sg-084672eaac289697c',
-    IpPermissions=[
-        {
-            'FromPort': 6080,
-            'IpProtocol': 'tcp',
-            'IpRanges': [
-                {
-                    'CidrIp': '69.12.21.94/32',
-                    'Description': 'VNC Client access to my PC',
-                },
-            ],
-            'ToPort': 6081,
-        },
-    ],
-)
+# response = ec2.authorize_security_group_ingress(
+#     GroupId='sg-084672eaac289697c',
+#     IpPermissions=[
+#         {
+#             'FromPort': 6080,
+#             'IpProtocol': 'tcp',
+#             'IpRanges': [
+#                 {
+#                     'CidrIp': '69.12.21.94/32',
+#                     'Description': 'VNC Client access to my PC',
+#                 },
+#             ],
+#             'ToPort': 6081,
+#         },
+#     ],
+# )
 
-print(response)
+# print(response)
 
 # response = ec2.revoke_security_group_ingress(
 #     GroupId='sg-084672eaac289697c',
@@ -84,3 +84,19 @@ print(response)
 # )
 
 # print(response)
+
+
+ec2 = boto3.resource('ec2')
+try:
+    instance_params = {
+                'ImageId': " ami-08f5f8ed43b9c257c", 'InstanceType': "t2.micro", 'KeyName': "client"
+            }
+    instances = ec2.create_instances(
+            ImageId="ami-08f5f8ed43b9c257c",
+            MinCount=1,
+            MaxCount=1,
+            InstanceType="t2.micro",
+            KeyName="client"
+        )
+except ClientError as e:
+    print(e)

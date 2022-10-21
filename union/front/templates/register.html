@@ -2,44 +2,46 @@
 
 {% block script %}
 <script defer>
-    const email = document.querySelector('#username');
+    const name = document.querySelector('#username');
+    const email = document.querySelector('#email');
     const password = document.querySelector('#psw'); 
-    const form = document.querySelector('#loginForm');
+    const form = document.querySelector('#registerForm');
     
     form.addEventListener('submit', (e) => {
+        console.log("Submitted");
         e.preventDefault();
         isFormValid = validateForm();
         if(isFormValid){
 
-            (getTokens(email,password)).then(
+            (registerUser(name,email,password)).then(
                 (data) => {
-                    window.location.href = "home";
+                    window.location.href = "login";
                 }
             );
         }
     });
     function validateForm() {
-        var x = document.forms["loginForm"]["username"].value;
-        var y = document.forms["loginForm"]["psw"].value;
-        if (x == "") {
-            alert("Username must be filled out");
-            return false;
-        }
-        if (y == "") {
-            alert("Password must be filled out");
+        var w = document.forms["registerForm"]["username"].value;
+        var x = document.forms["registerForm"]["email"].value;
+        var y = document.forms["registerForm"]["psw"].value;
+        var z = document.forms["registerForm"]["psw1"].value;
+        console.log(x,y,z);
+        if (y != z) {
+            alert("Both Passwords must be same");
             return false;
         }
         return true;
     }
-    async function getTokens(email,password){
+    async function registerUser(name,email,password){
             var data = {
+                "name": name.value,
                 "email": email.value,
                 "password": password.value
                 }
             console.log(data);
             var token = '{{csrf_token}}';
                 try{
-                    const response = await fetch('api/login', {
+                    const response = await fetch('api/register', {
                         method: 'POST',
                         body: JSON.stringify(data),
                         headers: {
@@ -64,30 +66,32 @@
     
     <section>
         <div class = "form-container">
-            <h1> Login</h1>
-            <form name="loginForm" id ="loginForm">
+            <h1> Register</h1>
+            <form name="registerForm" id ="registerForm">
                 {% csrf_token %}
                 {{ form.as_p }}
                 <div class = "control">
                     <label for = "username"> Username </label>
-                    <input type = "email" name = "username" id = "username" placeholder = "Enter your username" required>
+                    <input type = "text" name = "username" id = "username" placeholder = "Enter your username" required>
+                </div>
+                <div class = "control">
+                    <label for = "email"> Email </label>
+                    <input type = "email" name = "email" id = "email" placeholder = "Enter your Email" required>
                 </div>
                 <div class = "control">
                     <label for = "password"> Password </label>
                     <input type = "password" name = "psw" id = "psw" placeholder = "Enter your password" required>
                 </div>
-                <span>
-                    <input type = "checkbox" name = "remember" id = "remember">
-                    <label for = "remember"> Remember me </label>
-                </span>
+                <div class = "control">
+                    <label for = "password"> Re-Enter Password </label>
+                    <input type = "password" name = "psw1" id = "psw1" placeholder = "Enter your password again" required>
+                </div>
+                
                 <div class = "control" id="app-login">
-                    <input type = "submit" value="Login"/> 
+                    <input type = "submit" value="Register"/> 
                 </div>
             </form>
            
-            <div class="link">
-                <a href="#"> Forgot Password? </a>
-            </div>
         </div>
     </section>
 {% endblock %}

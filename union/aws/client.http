@@ -1,10 +1,10 @@
 POST http://localhost:8000/api/register HTTP/1.1
 content-Type : application/json
 
-{
-    "name": "b",
-    "email": "b@b.com",
-    "password": "b"
+{   
+    "name": "cat",
+    "email": "c@c.com",
+    "password": "c"
 }
 
 ###
