@@ -38,7 +38,38 @@
                     console.log(err);
                 }
         }
+    setInterval(()=>
+    {
+        refreshToken().then(
+            (data) => {
+                console.log("Refreshed");
+            }
+        );
+    }, 60000-500);
+    async function refreshToken(){
+            var data = {
+                
+                }
+            
+            var token = '{{csrf_token}}';
+                try{
+                    const response = await fetch('api/refresh', {
+                        method: 'POST',
+                        body: JSON.stringify(data),
+                        headers: {
+                            'Content-Type': 'application/json',
+                            "X-CSRFToken": token
 
+                        }
+                    });
+                    var res =  await response.json();
+                    return res;
+                }
+                catch(err){
+                    console.log(err);
+                }
+        }
+    
 </script>
 {% endblock %}
 

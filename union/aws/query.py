@@ -52,7 +52,7 @@ def change_securtiy_group(group_id,ip,port):
                     'ToPort': port,
                     'IpRanges': [{'CidrIp': f'{ip}/32'}]}
             ])
-        print('Ingress Successfully Set %s' % data)
+        print('Security group changed as  %s' % data)
     except ClientError as e:
         print(e)
 # response = ec2.authorize_security_group_ingress(
@@ -173,8 +173,8 @@ def terminate_instance(instance_id):
     except ClientError as e:
         print(e)
 
-@sync_to_async
-def delete_security_group(group_id):
+
+async def delete_security_group(group_id):
     ec2 = boto3.client('ec2')
     security_group_id = group_id
     flag = False

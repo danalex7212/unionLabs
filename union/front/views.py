@@ -31,8 +31,12 @@ def home(request):
     try:
         payload = jwt.decode(token, 'secret', algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
+        raise AuthenticationFailed('Unauthenticated!')
         payload = jwt.decode(token, 'secret', algorithms=['HS256'],options={"verify_signature": False})
+        request.delete_cookie('access')
+        request.delete_cookie('refresh')
         instance = UsedInstance.objects.filter(id=payload['instanceId']).first()
+        print(payload['instanceId'])
         usedPort = instance.port
         OpenPorts(usedPort.port).save()
         terminate_instance(instance.instance_id)
