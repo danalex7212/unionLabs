@@ -36,9 +36,9 @@ import sys
 import boto3
 
 
-from instance import InstanceWrapper
+from aws.auto.instance import InstanceWrapper
 
-from security_group import SecurityGroupWrapper
+from aws.auto.security_group import SecurityGroupWrapper
 
 
 logger = logging.getLogger(__name__)
