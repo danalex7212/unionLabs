@@ -112,7 +112,8 @@ def change_securtiy_group(group_id,ip,port):
 def create_instance(instance_name,security_group_id,port):
     instance_id =''
     ec2 = boto3.client('ec2')
-    com = f'sudo novnc --listen {port} --vnc 54.235.238.105:{port-100}'
+    proxy_ip = get_public_ip('i-0d7f446f52790b622')
+    com = f'sudo novnc --listen {port} --vnc {proxy_ip}:{port-100}'
     #print(com)
     bash = '#!/bin/bash\n'+com
     try:

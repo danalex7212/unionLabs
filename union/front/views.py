@@ -50,5 +50,7 @@ def home(request):
     print(serializer.data['name'])
     name = serializer.data['name']
     ip = instance.ip
-    return render(request, 'home.html', {'title': 'Home','name': name, 'ip': ip})
+    port = instance.port.port
+
+    return render(request, 'home.html', {'title': 'Home','name': name, 'ip': ip, 'port': port})
     
