@@ -109,9 +109,12 @@ def change_securtiy_group(group_id,ip,port):
 # except ClientError as e:
 #     print(e)
 
-def create_instance(instance_name,security_group_id):
+def create_instance(instance_name,security_group_id,port):
     instance_id =''
     ec2 = boto3.client('ec2')
+    com = f'sudo novnc --listen {port} --vnc 54.235.238.105:{port-100}'
+    #print(com)
+    bash = '#!/bin/bash\n'+com
     try:
         response = ec2.run_instances(
         BlockDeviceMappings=[
@@ -136,6 +139,7 @@ def create_instance(instance_name,security_group_id):
         SecurityGroupIds=[
             security_group_id,
         ],
+        UserData=bash,
         TagSpecifications=[
                 {   
                     'ResourceType': 'instance',
@@ -154,6 +158,21 @@ def create_instance(instance_name,security_group_id):
     except ClientError as e:
         print(e)
 
+def run_command(instance_id,port):
+    
+    
+    ssm_client = boto3.client('ssm')
+    response =  ssm_client.send_command(
+                InstanceIds=[instance_id],
+                DocumentName="AWS-RunShellScript",
+                Parameters={'commands': [f'novnc --listen {port} --vnc 54.235.238.105:{port-100}']}, )
+
+    command_id = response['Command']['CommandId']
+    output = ssm_client.get_command_invocation(
+        CommandId=command_id,
+        InstanceId=instance_id,
+        )
+    print(output)
 #instance_id = 'i-0807d0d82361cae36'
 def get_public_ip(instance_id):
     ec2 = boto3.client('ec2')

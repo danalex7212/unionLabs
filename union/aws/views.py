@@ -3,7 +3,7 @@ from email import message
 from django.shortcuts import render
 from rest_framework.views import APIView
 
-from aws.query import change_securtiy_group, create_instance,terminate_instance,delete_security_group
+from aws.query import change_securtiy_group, create_instance,terminate_instance,delete_security_group,run_command
 from .serializers import UserSerializer
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
@@ -90,7 +90,7 @@ class LoginView(APIView):
         print("OPenInstance ip : ", open_instance_ip)
         change_securtiy_group(open_instance.sg_id,current_ip_address,open_instance.port.port)
         print("changed security group")
-
+        #run_command(open_instance_id,open_instance.port.port)
         
         use_instance = UsedInstance(name=open_instance.name,instance_id=open_instance_id,ip=open_instance_ip,sg_id=open_instance.sg_id,port=open_instance.port)
         use_instance.save()
@@ -101,12 +101,13 @@ class LoginView(APIView):
             numOpenInst =  OpenInstance.objects.latest('pk').pk
         except OpenInstance.DoesNotExist:
             numOpenInst =  0
-        
-        new_sg_id = create_security_group(f'client{numOpenInst+1}')
-        new_instance_id = create_instance(f'client{numOpenInst+1}',new_sg_id)
+
         open_port = OpenPorts.objects.all()[0]
         new_port = UsedPorts(port=open_port.port)
         new_port.save()
+        new_sg_id = create_security_group(f'client{numOpenInst+1}')
+        new_instance_id = create_instance(f'client{numOpenInst+1}',new_sg_id,new_port.port)
+        
         print("new instance and security group created")
 
         OpenInstance(name=f'client{numOpenInst+1}',instance_id=new_instance_id,sg_id=new_sg_id,port=new_port).save()
