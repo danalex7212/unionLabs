@@ -1,6 +1,7 @@
 # unionLabs
 
 ##Introduction
+
 • Cloud computing enables deployment of computing
 resources on demand with substantially less
 overhead costs. In combination with modern web
@@ -19,6 +20,7 @@ doesn’t require installation of any third party
 software applications by the user
 
 ##Methodology
+
 • The first step in configuring the system is to set up
 a reverse proxy to forward certain ports in the
 server that will be used for granting remote access
@@ -26,6 +28,8 @@ to the machine.
 • FRP is an open source fast reverse proxy for port
 forwarding a server behind a NAT firewall to a
 remote server under our control.
+
+
 ![frp](https://user-images.githubusercontent.com/36897394/200740504-5a1b209b-5207-4839-8d54-b506cde0cf57.jpg)
 
 • The next step is to use a Virtual Network
@@ -45,6 +49,7 @@ that serves VNC as a web server.
 noVNC installed ,to provide isolated client
 machines for every user.
 
+
 ![vnc](https://user-images.githubusercontent.com/36897394/200740584-fc48e1d4-c1e1-4bb8-83ff-466a876ee255.jpg)
 
 • Users can connect to their respective instance with
@@ -57,6 +62,8 @@ background by a parallel computing resource on
 the cloud such as AWS SQS and AWS Lambda .
 
 ##Detailed Architecture
+
+
 ![Architecture](https://user-images.githubusercontent.com/36897394/200740675-75962f01-d9a0-445b-9c15-39ecd3a8caf7.jpg)
 • An authentication server is used to authenticate
 and authorise users for remote server access.
@@ -81,6 +88,7 @@ is queued for termination.
 
 ##Results and Challenges
 
+
 • With our current design , multiple users obtain
 separate desktop GUI to a remote machine with
 only their web browser.
@@ -98,6 +106,7 @@ significantly reduced by using only containers and
 serverless computing resources .
 
 ##Conclusion
+
 • With the designed system we are able to authenticate
 and authorise multiple users to remotely access a GUI
 to a machine behind a NAT firewall.
