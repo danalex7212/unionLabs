@@ -1,6 +1,6 @@
 # unionLabs
 
-##Introduction
+## Introduction
 
 • Cloud computing enables deployment of computing
 resources on demand with substantially less
@@ -19,7 +19,7 @@ cross platform browser based remote access that
 doesn’t require installation of any third party
 software applications by the user
 
-##Methodology
+## Methodology
 
 • The first step in configuring the system is to set up
 a reverse proxy to forward certain ports in the
@@ -61,7 +61,7 @@ termination after use, can be automated in the
 background by a parallel computing resource on
 the cloud such as AWS SQS and AWS Lambda .
 
-##Detailed Architecture
+## Detailed Architecture
 
 
 ![Architecture](https://user-images.githubusercontent.com/36897394/200740675-75962f01-d9a0-445b-9c15-39ecd3a8caf7.jpg)
@@ -86,7 +86,7 @@ maintaining the system.
 • When a user logs out , the corresponding instance
 is queued for termination.
 
-##Results and Challenges
+## Results and Challenges
 
 
 • With our current design , multiple users obtain
@@ -105,7 +105,7 @@ internet.
 significantly reduced by using only containers and
 serverless computing resources .
 
-##Conclusion
+## Conclusion
 
 • With the designed system we are able to authenticate
 and authorise multiple users to remotely access a GUI
