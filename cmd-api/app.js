@@ -22,3 +22,19 @@ app.get("/showFolders", (req, res, next) => {
         res.json({code:200,"message":"command executed"});
     });
    });
+   app.get("/makeFolder", (req, res, next) => {
+    exec("mkdir testfolder", (error, stdout, stderr) => {
+       if (error) {
+           console.log(`error: ${error.message}`);
+           res.json({"code":501,
+               "message":error.message});
+       }
+       if (stderr) {
+           res.json({"code":501,
+               "message":"unexpected error occured"});
+           return;
+       }
+       console.log(`stdout: ${stdout}`);
+       res.json({code:200,"message":"command executed"});
+   });
+  });   
