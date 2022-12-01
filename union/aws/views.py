@@ -10,7 +10,8 @@ from rest_framework.exceptions import AuthenticationFailed
 from .models import User
 import jwt , datetime
 
-
+import time
+import re
 import boto3
 import urllib.request
 import sys
@@ -203,8 +204,25 @@ class LogoutView(APIView):
         usedPort = instance.port
         print(usedPort)
         OpenPorts(port=usedPort.port).save()
-        terminate_instance(instance.instance_id)
-        asyncio.run(delete_security_group(instance.sg_id))
+        deleteInstanceMessage = 'deleteInstance '+instance.instance_id
+        deleteInstanceMessage +=' '+str(int(time.time()*10e6))
+
+        deleteSgMessage = 'deleteSg '+instance.sg_id
+        deleteSgMessage +=' '+str(int(time.time()*10e6))
+        
+        sqsClient = boto3.client('sqs')
+        response = sqsClient.send_message(
+                    QueueUrl='https://queue.amazonaws.com/780492718645/createQueue.fifo',
+                    MessageBody=deleteInstanceMessage,
+                    MessageGroupId='unionLabs'
+                )
+        response = sqsClient.send_message(
+                    QueueUrl='https://sqs.us-east-1.amazonaws.com/780492718645/deleteSg.fifo',
+                    MessageBody=deleteSgMessage,
+                    MessageGroupId='unionLabs'
+                )
+        #terminate_instance(instance.instance_id)
+        #asyncio.run(delete_security_group(instance.sg_id))
         usedPort.delete()
         
         response.delete_cookie('access')
