@@ -38,3 +38,22 @@ app.get("/showFolders", (req, res, next) => {
        res.json({code:200,"message":"command executed"});
    });
   });   
+
+  app.get("/showDevices", (req, res, next) => {
+    exec("lsusb", (error, stdout, stderr) => {
+       if (error) {
+           console.log(`error: ${error.message}`);
+           res.json({"code":501,
+               "message":error.message});
+       }
+       if (stderr) {
+           res.json({"code":501,
+               "message":"unexpected error occured"});
+           return;
+       }
+       console.log(`stdout: ${stdout}`);
+       let devices=stdout.split('\n')
+       res.json({code:200,"message":"command executed",
+            result:devices.slice(0,devices.length-1)});
+   });
+  }); 
