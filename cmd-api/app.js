@@ -39,7 +39,7 @@ app.get("/showFolders", (req, res, next) => {
    });
   });   
 
-  app.get("/showDevices", (req, res, next) => {
+  app.get("/showalldevices", (req, res, next) => {
     exec("lsusb", (error, stdout, stderr) => {
        if (error) {
            console.log(`error: ${error.message}`);
@@ -56,4 +56,24 @@ app.get("/showFolders", (req, res, next) => {
        res.json({code:200,"message":"command executed",
             result:devices.slice(0,devices.length-1)});
    });
-  }); 
+  });
+
+  app.get("/showusrp", (req, res, next) => {
+    exec("lsusb", (error, stdout, stderr) => {
+       if (error) {
+           console.log(`error: ${error.message}`);
+           res.json({"code":501,
+               "message":error.message});
+       }
+       if (stderr) {
+           res.json({"code":501,
+               "message":"unexpected error occured"});
+           return;
+       }
+       console.log(`stdout: ${stdout}`);
+       let devices=stdout.split('\n');
+       const result = devices.filter(word => word.includes("Gaming"));
+       res.json({code:200,"message":"command executed",
+            result:result});
+   });
+  });
