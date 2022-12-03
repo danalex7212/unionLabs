@@ -106,12 +106,21 @@ class LoginView(APIView):
         open_port = OpenPorts.objects.all()[0]
         new_port = UsedPorts(port=open_port.port)
         new_port.save()
-        new_sg_id = create_security_group(f'client{numOpenInst+1}')
-        new_instance_id = create_instance(f'client{numOpenInst+1}',new_sg_id,new_port.port)
-        
+        #new_sg_id = create_security_group(f'client{numOpenInst+1}')
+        #new_instance_id = create_instance(f'client{numOpenInst+1}',new_sg_id,new_port.port)
+        message = 'createInstance '+str(numOpenInst)+' '+str(new_port.port)+' '+str(new_port.pk)
+        message +=' '+str(int(time.time()*10e6))
+        print(message)
+        sqsClient = boto3.client('sqs')
+        response = sqsClient.send_message(
+            QueueUrl='https://queue.amazonaws.com/780492718645/createQueue.fifo',
+            MessageBody=message,
+            MessageGroupId='unionLabs'
+        )
+        print(response)
         print("new instance and security group created")
 
-        OpenInstance(name=f'client{numOpenInst+1}',instance_id=new_instance_id,sg_id=new_sg_id,port=new_port).save()
+        # OpenInstance(name=f'client{numOpenInst+1}',instance_id=new_instance_id,sg_id=new_sg_id,port=new_port).save()
         open_port.delete()
         open_instance.delete()
         print("open instance created in table")
@@ -211,16 +220,18 @@ class LogoutView(APIView):
         deleteSgMessage +=' '+str(int(time.time()*10e6))
         
         sqsClient = boto3.client('sqs')
-        response = sqsClient.send_message(
+        sqsResponse = sqsClient.send_message(
                     QueueUrl='https://queue.amazonaws.com/780492718645/createQueue.fifo',
                     MessageBody=deleteInstanceMessage,
                     MessageGroupId='unionLabs'
                 )
-        response = sqsClient.send_message(
+        print(sqsResponse)
+        sqsResponse = sqsClient.send_message(
                     QueueUrl='https://sqs.us-east-1.amazonaws.com/780492718645/deleteSg.fifo',
                     MessageBody=deleteSgMessage,
                     MessageGroupId='unionLabs'
                 )
+        print(sqsResponse)
         #terminate_instance(instance.instance_id)
         #asyncio.run(delete_security_group(instance.sg_id))
         usedPort.delete()
