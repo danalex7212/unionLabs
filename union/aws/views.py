@@ -9,9 +9,9 @@ from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
 from .models import User
 import jwt , datetime
-
 import time
-import re
+
+
 import boto3
 import urllib.request
 import sys
