@@ -10,7 +10,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from .models import User
 import jwt , datetime
 import time
-
+import requests
 
 import boto3
 import urllib.request
@@ -97,7 +97,14 @@ class LoginView(APIView):
         use_instance.save()
         
         print("Used Instance created in  table")
-
+        try:
+            url = f'http://3.91.155.146:3000/startvnc?email={email}&port={open_instance.port.port%6000}'
+            print(url)
+            response = requests.get(url)
+            print(response)
+        except Exception as e:
+            print(e)
+            print("Error in starting vnc")
         try:
             numOpenInst =  OpenInstance.objects.latest('pk').pk
         except OpenInstance.DoesNotExist:
@@ -232,9 +239,20 @@ class LogoutView(APIView):
                     MessageGroupId='unionLabs'
                 )
         print(sqsResponse)
+        try:
+            url = f'http://3.91.155.146:3000/endvnc?port={usedPort.port%6000}'
+            print(url)
+            apiResponse = requests.get(url)
+            print(apiResponse)
+            print("vnc server killed ")
+        except Exception as e:
+            print(e)
+            print("Error in killing vnc")
+        
         #terminate_instance(instance.instance_id)
         #asyncio.run(delete_security_group(instance.sg_id))
         usedPort.delete()
+        
         
         response.delete_cookie('access')
         response.delete_cookie('refresh')

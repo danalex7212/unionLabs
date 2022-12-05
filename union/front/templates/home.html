@@ -3,7 +3,7 @@
 {% block script %}
 <script defer>
     
-    const button = document.querySelector('#logoutButton');
+    const button = document.querySelector('#logout-button');
     console.log(button);
     button.addEventListener('click', (e) => {
         console.log("Logged out");
@@ -39,7 +39,7 @@
                 }
         }
     setInterval(()=>
-    {
+    {   
         refreshToken().then(
             (data) => {
                 console.log("Refreshed");
@@ -47,6 +47,7 @@
         );
     }, 60000-500);
     async function refreshToken(){
+        console.log("Refreshing");
             var data = {
                 
                 }
@@ -75,7 +76,7 @@
 
 {% block content %}
     
-    <section>
+<div style="position: relative; height: 20vh; width: fit-content; background-color:#8bc2eb;padding: 2vh;" class="div-section">
         <div class = "home-container">
 
             <h1> Home {{name}}</h1>
@@ -85,5 +86,5 @@
             
             
         </div>
-    </section>
+    </div>
 {% endblock %}
