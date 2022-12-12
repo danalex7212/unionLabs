@@ -9,7 +9,8 @@ from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
 from .models import User
 import jwt , datetime
-
+import time
+import requests
 
 import boto3
 import urllib.request
@@ -96,7 +97,14 @@ class LoginView(APIView):
         use_instance.save()
         
         print("Used Instance created in  table")
-
+        try:
+            url = f'http://3.91.155.146:3000/startvnc?email={email}&port={open_instance.port.port%6000}'
+            print(url)
+            response = requests.get(url)
+            print(response)
+        except Exception as e:
+            print(e)
+            print("Error in starting vnc")
         try:
             numOpenInst =  OpenInstance.objects.latest('pk').pk
         except OpenInstance.DoesNotExist:
@@ -105,12 +113,21 @@ class LoginView(APIView):
         open_port = OpenPorts.objects.all()[0]
         new_port = UsedPorts(port=open_port.port)
         new_port.save()
-        new_sg_id = create_security_group(f'client{numOpenInst+1}')
-        new_instance_id = create_instance(f'client{numOpenInst+1}',new_sg_id,new_port.port)
-        
+        #new_sg_id = create_security_group(f'client{numOpenInst+1}')
+        #new_instance_id = create_instance(f'client{numOpenInst+1}',new_sg_id,new_port.port)
+        message = 'createInstance '+str(numOpenInst)+' '+str(new_port.port)+' '+str(new_port.pk)
+        message +=' '+str(int(time.time()*10e6))
+        print(message)
+        sqsClient = boto3.client('sqs')
+        response = sqsClient.send_message(
+            QueueUrl='https://queue.amazonaws.com/780492718645/createQueue.fifo',
+            MessageBody=message,
+            MessageGroupId='unionLabs'
+        )
+        print(response)
         print("new instance and security group created")
 
-        OpenInstance(name=f'client{numOpenInst+1}',instance_id=new_instance_id,sg_id=new_sg_id,port=new_port).save()
+        # OpenInstance(name=f'client{numOpenInst+1}',instance_id=new_instance_id,sg_id=new_sg_id,port=new_port).save()
         open_port.delete()
         open_instance.delete()
         print("open instance created in table")
@@ -203,9 +220,39 @@ class LogoutView(APIView):
         usedPort = instance.port
         print(usedPort)
         OpenPorts(port=usedPort.port).save()
-        terminate_instance(instance.instance_id)
-        asyncio.run(delete_security_group(instance.sg_id))
+        deleteInstanceMessage = 'deleteInstance '+instance.instance_id
+        deleteInstanceMessage +=' '+str(int(time.time()*10e6))
+
+        deleteSgMessage = 'deleteSg '+instance.sg_id
+        deleteSgMessage +=' '+str(int(time.time()*10e6))
+        
+        sqsClient = boto3.client('sqs')
+        sqsResponse = sqsClient.send_message(
+                    QueueUrl='https://queue.amazonaws.com/780492718645/createQueue.fifo',
+                    MessageBody=deleteInstanceMessage,
+                    MessageGroupId='unionLabs'
+                )
+        print(sqsResponse)
+        sqsResponse = sqsClient.send_message(
+                    QueueUrl='https://sqs.us-east-1.amazonaws.com/780492718645/deleteSg.fifo',
+                    MessageBody=deleteSgMessage,
+                    MessageGroupId='unionLabs'
+                )
+        print(sqsResponse)
+        try:
+            url = f'http://3.91.155.146:3000/endvnc?port={usedPort.port%6000}'
+            print(url)
+            apiResponse = requests.get(url)
+            print(apiResponse)
+            print("vnc server killed ")
+        except Exception as e:
+            print(e)
+            print("Error in killing vnc")
+        
+        #terminate_instance(instance.instance_id)
+        #asyncio.run(delete_security_group(instance.sg_id))
         usedPort.delete()
+        
         
         response.delete_cookie('access')
         response.delete_cookie('refresh')

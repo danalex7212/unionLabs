@@ -24,13 +24,15 @@ def login(request):
 
 def home(request):
     token = request.COOKIES.get('access')
-
+    print(token)
     if not token:
         return render(request, 'login.html', {'title': 'Login'})
 
     try:
         payload = jwt.decode(token, 'secret', algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
+        print('expired')
+        return render(request, 'login.html', {'title': 'Login'})
         raise AuthenticationFailed('Unauthenticated!')
         payload = jwt.decode(token, 'secret', algorithms=['HS256'],options={"verify_signature": False})
         request.delete_cookie('access')

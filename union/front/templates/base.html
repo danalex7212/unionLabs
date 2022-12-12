@@ -18,9 +18,9 @@
     <div class="parent">
         <header >
             <div class = 'nav'>
-                <div ><a class="button-42" href = '/'>Register</a></div>
-                <div ><a class="button-42" href = '/login'>Login</a></div>
-                <div class="button-42" id="logoutButton" >Logout</div>
+                <div id="register-button"><a class="button-42" href = '/'>Register</a></div>
+                <div id="login-button"><a class="button-42" href = '/login'>Login</a></div>
+                <div id="logout-button" class="button-42">Logout</div>
             </div>
         </header>
         <div class="left-side">
@@ -40,7 +40,24 @@
         </div>
         <footer></footer>
     </div>
-    
+    <script>
+        const pathName = window.location.pathname.substring(1)
+        if(pathName === "login" ) {
+            document.getElementById("register-button").style.display = "block"
+            document.getElementById("login-button").style.display = "none"
+            document.getElementById("logout-button").style.display = "none"
+        }
+        if(!pathName) {
+            console.log("jkbefwkjlbsjfklb")
+            document.getElementById("logout-button").style.display = "none"
+            document.getElementById("login-button").style.display = "block"
+        }
+        if(pathName === "home") {
+            document.getElementById("login-button").style.display = "none"
+            document.getElementById("register-button").style.display = "none"
+        }
+        console.log(window.location.pathname.substring(1))
+    </script>
     {% block script %}
     {% endblock %}
 </body>
