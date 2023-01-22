@@ -35,7 +35,7 @@ try {
   }
 
         const firstCommand = spawn('sudo', ['docker', 'run', '-p', `590${req.query.port}:5901`, '-d', 'testvncpass1']); // create a container with vnc server on the required port
-
+        //testvncpass1 is a docker image with vnc server installed and configured
 
 firstCommand.stdout.on('data', (data) => {
   console.log(`stdout: ${data}`);
